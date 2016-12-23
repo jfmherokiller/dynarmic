@@ -7,11 +7,30 @@
 #pragma once
 
 #include <functional>
+#include <type_traits>
 
 #include "common/assert.h"
 
 namespace Dynarmic {
 namespace Arm {
+
+namespace detail {
+
+/// std::void_t is a C++17 feature
+template<typename T>
+struct void_t { typedef void type; };
+
+template<typename T, typename = void>
+struct get_instruction_return_type {
+    using type = void; // default to void
+};
+
+template<typename T>
+struct get_instruction_return_type<T, typename void_t<typename T::instruction_return_type>::type> {
+    using type = typename T::instruction_return_type;
+};
+
+} // namespace detail
 
 /**
  * Generic instruction handling construct.
@@ -28,7 +47,7 @@ class Matcher {
 public:
     using opcode_type         = OpcodeType;
     using visitor_type        = Visitor;
-    using handler_return_type = typename Visitor::instruction_return_type;
+    using handler_return_type = typename detail::get_instruction_return_type<Visitor>::type;
     using handler_function    = std::function<handler_return_type(Visitor&, opcode_type)>;
 
     Matcher(const char* const name, opcode_type mask, opcode_type expected, handler_function func)
