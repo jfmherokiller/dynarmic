@@ -31,7 +31,7 @@ set(SRCS
     ir_opt/dead_code_elimination_pass.cpp
     ir_opt/get_set_elimination_pass.cpp
     ir_opt/verification_pass.cpp
-    )
+        ir_opt/constant_folding_pass.cpp)
 
 set(HEADERS
     ../include/dynarmic/callbacks.h
@@ -68,7 +68,7 @@ set(HEADERS
     frontend/translate/translate.h
     frontend/translate/translate_arm/translate_arm.h
     ir_opt/passes.h
-    )
+        ir_opt/constant_folding_pass.cpp)
 
 if (ARCHITECTURE_x86_64)
     list(APPEND SRCS
